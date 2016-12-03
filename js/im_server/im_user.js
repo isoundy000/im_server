@@ -5,7 +5,7 @@
 */
 
 function Session() {
-    this.cid = 0;	//client与im连接的cid
+    this.cid = 0;	        //client与im连接的cid
     this.sid = 0;			//全局唯一session_id				
     this.account = "";		//client帐号名
     this.last_hb_time = 0;  //上次心跳时间
@@ -24,14 +24,14 @@ Session.prototype.on_heartbeat = function (msg) {
 function Im_User() {
 	this.save_data_tick = util.now_sec();
 	this.cid = 0;	//client与im连接的cid
-	this.sid = 0;			//全局唯一session_id
+	this.sid = 0;   //全局唯一session_id
 	this.is_change = false;
 	this.user_info = new User_Info();
 }
 
 //玩家上线，加载数据
 Im_User.prototype.login = function(cid, sid, user_info) {
-	log_info('********im user login, user_id:', user_info.user_id, ' user_name:', user_info.user_name, ' gate_eid:', gate_eid, ' sid:', sid);
+	log_info('********im user login, user_id:', user_info.user_id, ' user_name:', user_info.user_name, ' sid:', sid);
 	this.cid = cid;
 	this.sid = sid;
 	this.user_info = user_info;
@@ -69,13 +69,13 @@ Im_User.prototype.tick = function(now) {
 
 Im_User.prototype.send_success_msg = function(msg_id, msg) {
 	this.is_change = true;
-	send_msg(this.gate_eid, 0, msg_id, Msg_Type.S2C, this.sid, msg);
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.S2C, this.sid, msg);
 }
 
 Im_User.prototype.send_error_msg = function(error_code) {
 	var msg = new s2c_5();
 	msg.error_code = error_code;
-	send_msg(this.gate_eid, 0, Msg.RES_ERROR_CODE, Msg_Type.S2C, this.sid, msg);
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, this.sid, msg);
 }
 
 Im_User.prototype.sync_login_to_client = function() {
@@ -88,7 +88,7 @@ Im_User.prototype.sync_login_logout_to_route = function(login) {
 	var msg = new node_5();
 	msg.login = login;
 	msg.user_info = this.user_info;
-	send_msg_to_public(Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT, this.sid, msg);
+	send_msg(Endpoint.IM_ROUTE_CONNECTOR, 0, Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT, Msg_Type.NODE_MSG, this.sid, msg);
 }
 
 Im_User.prototype.sync_user_data_to_db = function(logout) {

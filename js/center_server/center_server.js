@@ -116,7 +116,7 @@ function verify_token(msg) {
 	    global.sid_idx = 0;
 	}
 	global.sid_set.add(global.sid_idx);
-	var msg_res = new node_3();
+	var msg_res = new node_4();
 	msg_res.account = msg.account;
 	msg_res.client_cid = msg.client_cid;
 	send_msg(Endpoint.CENTER_NODE_SERVER, msg.cid, Msg.SYNC_IM_CENTER_VERIFY_TOKEN, Msg_Type.NODE_MSG, global.sid_idx, msg_res);

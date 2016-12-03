@@ -75,9 +75,9 @@ if (typeof Endpoint == "undefined") {
 	
 	Endpoint.IM_CLIENT_SERVER      = 1;
 	Endpoint.IM_CENTER_CONNECTOR   = 2;
-	Endpoint.IM_DATA_CONNECTOR	    = 3;
+	Endpoint.IM_DATA_CONNECTOR	   = 3;
 	Endpoint.IM_MASTER_CONNECTOR   = 4;
-	Endpoint.IM_ROUTE_CONNECOTR    = 5;
+	Endpoint.IM_ROUTE_CONNECTOR    = 5;
 }
 
 if (typeof Select_Data_Type == "undefined") {
