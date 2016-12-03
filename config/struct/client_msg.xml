@@ -1,0 +1,45 @@
+<root>
+
+  <c2s_1 msg_id="1" msg_name="REQ_HEARTBEAT">
+    <arg type="int" bit="32" name="client_time"/>
+  </c2s_1>
+
+  <s2c_1 msg_id="1" msg_name="RES_HEARTBEAT">
+    <arg type="int" bit="32" name="server_time"/>
+  </s2c_1>
+
+  <c2s_2 msg_id="2" msg_name="REQ_SELECT_IM">
+    <arg type="string" name="account"/>
+  </c2s_2>
+
+  <s2c_2 msg_id="2" msg_name="RES_SELECT_IM">
+    <arg type="string" name="server_ip"/>
+    <arg type="uint" bit="16" name="server_port"/>
+    <arg type="string" name="token"/>
+  </s2c_2>
+
+  <c2s_3 msg_id="3" msg_name="REQ_CONNECT_IM">
+    <arg type="string" name="account"/>
+    <arg type="string" name="token"/>
+  </c2s_3>
+
+  <s2c_3 msg_id="3" msg_name="RES_CONNECT_IM">
+  </s2c_3>
+
+  <c2s_4 msg_id="4" msg_name="REQ_FETCH_USER_INFO">
+    <arg type="string" name="account"/>
+  </c2s_4>
+
+  <s2c_4 msg_id="4" msg_name="RES_USER_INFO">
+    <struct type="User_Info" name="user_info"/>
+  </s2c_4>
+
+  <c2s_5 msg_id="5" msg_name="REQ_CREATE_USER">
+    <struct type="Create_User_Info" name="user_info"/>
+  </c2s_5>
+
+  <s2c_5 msg_id="5" msg_name="RES_ERROR_CODE">
+    <arg type="uint" bit="16" name="error_code"/>
+  </s2c_5>
+
+</root>

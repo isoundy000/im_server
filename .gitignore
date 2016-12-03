@@ -1,0 +1,7 @@
+/Debug/
+/Release/
+/log/
+/.obj/
+/natives_blob.bin
+/snapshot_blob.bin
+/im_server
