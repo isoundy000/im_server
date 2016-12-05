@@ -120,6 +120,9 @@ function process_im_node_msg(msg) {
 	    case Msg.SYNC_IM_CENTER_VERIFY_TOKEN:
 		    verify_token(msg);
 		    break;
+	    case Msg.SYNC_DB_RET_CODE:
+	        process_db_ret_code(msg);
+	        break;
 	    case Msg.SYNC_RES_SELECT_DB_DATA:
 	        res_select_db_data(msg);
 	        break;
@@ -153,7 +156,7 @@ function connect_im(msg) {
 
 function process_node_code(msg) {
 	switch (msg.node_code) {
-	    case Node_Code.VERIFY_TOKEN_FAIL:
+	    case Error_Code.TOKEN_ERROR:
 	        on_close_session(Error_Code.TOKEN_ERROR);
 	        break;
 	    default:
@@ -167,6 +170,32 @@ function verify_token(msg) {
 	session.sid = msg.sid;
 	session.account = msg.account;
 	on_add_session(session);
+}
+
+function process_db_ret_code(msg) {
+    switch (msg.opt_msg_id) {
+        case Msg.SYNC_SELECT_DB_DATA: {
+            if (msg.ret_code == DB_Ret_Code.DATA_NOT_EXIST && msg.query_name == "user_id") {
+                var session = global.sid_session_map.get(msg.sid);
+                var msg_res = new s2c_5();
+                msg_res.error_code = Error_Code.NEED_CREATE_USER;
+                send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
+            }
+            else if (msg.ret_code == DB_Ret_Code.OPT_FAIL) {
+                log_error('select db data fail, sid:', msg.sid);
+                on_remove_session(msg.sid, Error_Code.USER_DATA_ERROR);
+            }
+            break;
+        }
+        case Msg.SYNC_SAVE_DB_DATA: {
+            if (msg.struct_name == "User_Info") {
+                global.logout_map.delete(msg.sid);
+            }
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 function fetch_user_info(msg) {
@@ -192,22 +221,13 @@ function fetch_user_info(msg) {
 function res_select_db_data(msg) {
     switch (msg.data_type) {
         case Select_Data_Type.INT64: {
-            if (msg.query_value <= 0) {
-                var session = global.sid_session_map.get(msg.sid);
-                var msg_res = new s2c_5();
-                msg_res.error_code = Error_Code.NEED_CREATE_USER;
-                send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
-            }
-            else if (msg.query_value > 0) {
+            if (msg.query_name == "user_id" && msg.query_value > 0) {
                 var msg_res = new node_250();
                 msg_res.db_id = DB_Id.GAME;
                 msg_res.key_index = msg.query_value;
                 msg_res.struct_name = "User_Info";
                 msg_res.data_type = DB_Data_Type.USER_DATA;
                 send_msg_to_db(Msg.SYNC_LOAD_DB_DATA, msg.sid, msg_res);
-            }
-            else {
-                log_error("data_type:", msg.data_type, " query_value:", msg.query_value);
             }
             break;
         }

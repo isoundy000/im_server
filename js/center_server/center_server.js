@@ -107,7 +107,7 @@ function verify_token(msg) {
 			on_close_session(msg.account, token_info.cid, Error_Code.TOKEN_ERROR);
 		}
 		var msg_res = new node_1();
-		msg_res.node_code = Node_Code.VERIFY_TOKEN_FAIL;
+		msg_res.node_code = Error_Code.TOKEN_ERROR;
 		return send_msg(Endpoint.CENTER_NODE_SERVER, msg.cid, Msg.SYNC_NODE_CODE, Msg_Type.NODE_MSG, msg.sid, msg_res);
 	}
 
