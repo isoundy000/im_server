@@ -10,10 +10,6 @@ function init(node_info) {
 	log_info('route_server init, node_type:',node_info.node_type,' node_id:',node_info.node_id,' node_name:',node_info.node_name);
 	global.node_info = node_info;
 	global.timer.init();
-
-	var msg = new node_2();
-	msg.node_info = node_info;
-	send_msg(Endpoint.ROUTE_MASTER_CONNECTOR, 0, Msg.SYNC_NODE_INFO, Msg_Type.NODE_MSG, 0, msg);
 }
 
 function on_hotupdate(file_path) { }

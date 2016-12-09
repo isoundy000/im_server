@@ -9,8 +9,8 @@ function Timer() {
 	var timer_id = 1;
 	
 	this.init = function() {
-	    //注册node_server定时器，时间间隔30s
-	    this.register_timer(30000, 0, this.node_server_handler);
+	    //注册node_server定时器，时间间隔2s
+	    this.register_timer(2000, 0, this.node_server_handler);
 
 	    switch(global.node_info.node_type) {
 		case Node_Type.CENTER_SERVER: {
@@ -43,10 +43,13 @@ function Timer() {
 	this.node_server_handler = function() {
 	    switch(global.node_info.node_type) {
 	        case Node_Type.CENTER_SERVER: {
+	            for(var i = 0; i < global.master_list.length; ++i) {
+	                util.sync_node_status(Endpoint.CENTER_NODE_SERVER, global.master_list[i], 0);
+	            }
 	            break;
 	        }
 	        case Node_Type.DATA_SERVER: {
-	            util.sync_node_status(Endpoint.DATA_MASTER_CONNECTOR, 0);
+	            util.sync_node_status(Endpoint.DATA_MASTER_CONNECTOR, 0, 0);
 	            break;
 	        }
 	        case Node_Type.MASTER_SERVER: {
@@ -55,11 +58,11 @@ function Timer() {
 	            break;
 	        }
 	        case Node_Type.ROUTE_SERVER: {
-	            util.sync_node_status(Endpoint.ROUTE_MASTER_CONNECTOR, 0);
+	            util.sync_node_status(Endpoint.ROUTE_MASTER_CONNECTOR, 0, global.sid_route_user_map.size);
 	            break;
 	        }
 	        case Node_Type.IM_SERVER: {
-	            util.sync_node_status(Endpoint.IM_MASTER_CONNECTOR, 0);
+	            util.sync_node_status(Endpoint.IM_MASTER_CONNECTOR, 0, global.sid_im_user_map.size);
 	            break;
 	        }
 	        default: {

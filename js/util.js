@@ -1,7 +1,7 @@
 /*
 *	描述：基础函数类
 *	作者：张亚磊
-*	时间：2016/12/01
+*	时间：2016/03/15
 */
 
 var util = function () {};
@@ -59,8 +59,9 @@ util.get_node_status = function() {
     return all_node_status;
 }
 
-util.sync_node_status = function(eid, cid) {
+util.sync_node_status = function(eid, cid, session_count) {
     var msg = new node_3();
     msg.node_status = util.get_node_status();
+    msg.node_status.session_count = session_count;
     send_msg(eid, cid, Msg.SYNC_NODE_STATUS, Msg_Type.NODE_MSG, 0, msg);
 }

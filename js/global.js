@@ -29,6 +29,8 @@ global.sid_idx = 0;
 global.sid_set = new Set();
 //im服务器列表
 global.im_list = new Array();
+//master cid列表
+global.master_list = new Array();
 //account--Token_Info
 global.account_token_map = new Map();
 

@@ -94,9 +94,16 @@ function select_im(msg) {
 }
 
 function set_node_info(msg) {
-    if (msg.node_info.node_type == Node_Type.IM_SERVER) {
-	    global.im_list.push(msg.node_info);
-	}
+    switch (msg.node_info.node_type) {
+        case Node_Type.IM_SERVER:
+            global.im_list.push(msg.node_info);
+            break;
+        case Node_Type.MASTER_SERVER:
+            global.master_list.push(msg.cid);
+            break;
+        default:
+            break;
+    }
 }
 
 function verify_token(msg) {

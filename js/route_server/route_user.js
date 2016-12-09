@@ -12,7 +12,7 @@ function Route_User() {
 
 //玩家上线，加载数据
 Route_User.prototype.login = function(im_cid, sid, user_info) {
-	log_info('********im user login, im_cid:', im_cid, ' sid:', sid, ' user_id:', user_info.user_id);
+	log_info('********route user login, im_cid:', im_cid, ' sid:', sid, ' user_id:', user_info.user_id);
 	this.im_cid = im_cid;
 	this.sid = sid;
 	this.user_info = user_info;
@@ -22,7 +22,7 @@ Route_User.prototype.login = function(im_cid, sid, user_info) {
 
 //玩家离线，保存数据
 Route_User.prototype.logout = function() {
-	log_info('********im user logout, user_id:', this.user_info.user_id, ' sid:', this.sid, " user_name:", this.user_info.user_name);
+    log_info('********route user logout, user_id:', this.user_info.user_id, ' sid:', this.sid, " user_name:", this.user_info.user_name);
 	global.sid_route_user_map.delete(this.sid);
 	global.uid_route_user_map.delete(this.user_info.user_id);
 }
