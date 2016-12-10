@@ -58,13 +58,12 @@ Im_User.prototype.logout = function() {
 }
 
 Im_User.prototype.tick = function(now) {
-	//同步玩家数据到数据库
-	if(this.is_change){
-	    if (now - this.save_data_tick >= 30) {
-			this.sync_user_data_to_db(false);
-			this.save_data_tick = now;
-		}
-	}
+    //同步数据到数据库
+    if (this.is_change && now - this.sync_player_data_tick >= 30) {
+        this.sync_player_data_to_db(false);
+        this.sync_player_data_tick = now;
+        this.is_change = false;
+    }
 }
 
 Im_User.prototype.send_success_msg = function(msg_id, msg) {
@@ -103,5 +102,4 @@ Im_User.prototype.sync_user_data_to_db = function(logout) {
 	msg.data_type = DB_Data_Type.USER_DATA;
 	msg.user_info = this.user_info;
 	send_msg_to_db(Msg.SYNC_SAVE_DB_DATA, this.sid, msg);
-	this.is_change = false;
 }
