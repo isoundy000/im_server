@@ -21,6 +21,8 @@ if (typeof Msg == "undefined") {
 	Msg.HTTP_HOT_UPDATE = 3;
 	Msg.HTTP_REQ_NODE_STATUS = 2;
 	Msg.HTTP_CREATE_NODE_PROCESS = 1;
+	Msg.RES_TEST_SWITCH = 255;
+	Msg.REQ_TEST_SWITCH = 255;
 	Msg.RES_ERROR_CODE = 5;
 	Msg.REQ_CREATE_USER = 5;
 	Msg.RES_USER_INFO = 4;

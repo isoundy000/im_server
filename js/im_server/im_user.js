@@ -68,7 +68,6 @@ Im_User.prototype.tick = function(now) {
 }
 
 Im_User.prototype.send_success_msg = function(msg_id, msg) {
-	this.is_change = true;
 	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.S2C, this.sid, msg);
 }
 

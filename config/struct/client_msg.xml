@@ -42,4 +42,30 @@
     <arg type="uint" bit="16" name="error_code"/>
   </s2c_5>
 
+  <c2s_255 msg_id="255" msg_name="REQ_TEST_SWITCH">
+    <if name="exist">
+      <arg type="int" bit="32" name="int32_arg"/>
+    </if>
+    <switch name="type" type="uint" bit="8">
+      <case val="1">
+        <arg type="int64" name="int64_arg"/>
+      </case>
+      <case val="2">
+        <arg type="string" name="string_arg"/>
+      </case>
+    </switch>
+  </c2s_255>
+
+  <s2c_255 msg_id="255" msg_name="RES_TEST_SWITCH">
+    <arg type="int" bit="32" name="int32_arg"/>
+    <switch name="type" type="uint" bit="8" >
+      <case val="1">
+        <vector vbit="8" type="int64" name="int64_vec"/>
+      </case>
+      <case val="2">
+        <vector vbit="8" type="string" name="string_vec"/>
+      </case>
+    </switch>
+  </s2c_255>
+
 </root>

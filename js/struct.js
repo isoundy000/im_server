@@ -188,6 +188,21 @@ function Node_Status() {
 	this.vm_data = 0;
 }
 
+function s2c_255() {
+	this.int32_arg = 0;
+	this.int64_vec = new Array();
+	this.string_vec = new Array();
+	this.type = 0;
+}
+
+function c2s_255() {
+	this.int32_arg = 0;
+	this.exist = false;
+	this.int64_arg = 0;
+	this.string_arg = "";
+	this.type = 0;
+}
+
 function s2c_5() {
 	this.error_code = 0;
 }
