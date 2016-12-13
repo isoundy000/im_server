@@ -106,9 +106,6 @@ function process_im_client_msg(msg) {
 	    case Msg.REQ_CREATE_USER:
 	        create_user(msg);
 	        break;
-	    case Msg.REQ_TEST_SWITCH:
-	        test_switch(msg);
-	        break;
 	    default:
 		    log_error('process_im_client_msg, msg_id not exist:', msg.msg_id);
 		    break;
@@ -281,27 +278,4 @@ function res_generate_id(msg) {
         var im_user = new Im_User();
         im_user.login(session.cid, session.sid, msg_res.user_info);
     }
-}
-
-function test_switch(msg) {
-    var msg_res = new s2c_255();
-    if (msg.exist) {
-        msg_res.int32_arg = msg.int32_arg;
-    }
-    msg_res.type = msg.type;
-    switch (msg.type) {
-        case 1: {
-            for (var i = 0; i < 2; ++i) {
-                msg_res.int64_vec.push(msg.int64_arg + i);
-            }
-            break;
-        }
-        case 2: {
-            for (var i = 0; i < 2; ++i) {
-                msg_res.string_vec.push(msg.string_arg + "_" + i);
-            }
-            break;
-        }
-    }
-    send_msg(Endpoint.IM_CLIENT_SERVER, msg.cid, Msg.RES_TEST_SWITCH, Msg_Type.S2C, msg.sid, msg_res);
 }

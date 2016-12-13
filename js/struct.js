@@ -183,24 +183,10 @@ function Node_Status() {
 	this.cpu_percent = 0;
 	this.vm_size = 0;
 	this.vm_rss = 0;
-	this.vm_stk = 0;
-	this.vm_exe = 0;
 	this.vm_data = 0;
-}
-
-function s2c_255() {
-	this.int32_arg = 0;
-	this.int64_vec = new Array();
-	this.string_vec = new Array();
-	this.type = 0;
-}
-
-function c2s_255() {
-	this.int32_arg = 0;
-	this.exist = false;
-	this.int64_arg = 0;
-	this.string_arg = "";
-	this.type = 0;
+	this.heap_total = 0;
+	this.heap_used = 0;
+	this.external_mem = 0;
 }
 
 function s2c_5() {
