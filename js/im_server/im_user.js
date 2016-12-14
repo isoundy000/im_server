@@ -16,7 +16,6 @@ Session.prototype.on_heartbeat = function (msg) {
     this.last_hb_time = util.now_sec();
     this.latency = this.last_hb_time - msg.client_time;
     if (this.latency < 0) this.latency = 0;
-    log_info("on_heartbeat, sid:", this.sid, " cid:", this.cid, " account:", this.account, " time:", this.last_hb_time);
 
     var msg_res = new s2c_1();
     msg_res.server_time = this.last_hb_time;
@@ -24,10 +23,11 @@ Session.prototype.on_heartbeat = function (msg) {
 }
 
 function Im_User() {
-	this.save_data_tick = util.now_sec();
-	this.cid = 0;	//client与im连接的cid
-	this.sid = 0;   //全局唯一session_id
-	this.is_change = false;
+	this.cid = 0;	            //client与im连接的cid
+	this.sid = 0;               //全局唯一session_id
+	this.data_change = false;   //玩家数据是否改变
+	this.save_data_tick = util.now_sec();   //玩家数据保存tick
+	this.msg = new Object();    //玩家消息对象，所有消息的发送通过此对象
 	this.user_info = new User_Info();
 }
 
@@ -61,47 +61,44 @@ Im_User.prototype.logout = function() {
 
 Im_User.prototype.tick = function(now) {
     //同步数据到数据库
-    if (this.is_change && now - this.sync_player_data_tick >= 30) {
+    if (this.data_change && now - this.sync_player_data_tick >= 30) {
         this.sync_player_data_to_db(false);
         this.sync_player_data_tick = now;
-        this.is_change = false;
+        this.data_change = false;
     }
 }
 
-Im_User.prototype.send_success_msg = function(msg_id, msg) {
-	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.S2C, this.sid, msg);
+Im_User.prototype.send_success_msg = function(msg_id) {
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.S2C, this.sid, this.msg);
 }
 
 Im_User.prototype.send_error_msg = function(error_code) {
-	var msg = new s2c_5();
-	msg.error_code = error_code;
-	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, this.sid, msg);
+	this.msg.error_code = error_code;
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, this.sid, this.msg);
 }
 
 Im_User.prototype.sync_login_to_client = function() {
-	var msg = new s2c_4();
-	msg.user_info = this.user_info;
-	this.send_success_msg(Msg.RES_USER_INFO, msg);
+	this.msg.user_info = this.user_info;
+	this.send_success_msg(Msg.RES_USER_INFO);
 }
 
 Im_User.prototype.sync_login_logout_to_route = function(login) {
-	var msg = new node_5();
-	msg.login = login;
-	msg.user_info = this.user_info;
-	send_msg(Endpoint.IM_ROUTE_CONNECTOR, 0, Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT, Msg_Type.NODE_MSG, this.sid, msg);
+	this.msg.login = login;
+	this.msg.user_info = this.user_info;
+	send_msg(Endpoint.IM_ROUTE_CONNECTOR, 0, Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT, Msg_Type.NODE_MSG, this.sid, this.msg);
 }
 
 Im_User.prototype.sync_user_data_to_db = function(logout) {
 	log_info('********sync_user_data_to_db,logout:', logout, ' user_id:', this.user_info.user_id, ' user_name:', this.user_info.user_name);
-	var msg = new node_251();
 	if(logout) {
-		msg.save_type = Save_Type.SAVE_DB_CLEAR_CACHE;
+	    this.msg.save_type = Save_Type.SAVE_DB_CLEAR_CACHE;
 	} else {
-		msg.save_type = Save_Type.SAVE_CACHE;
+	    this.msg.save_type = Save_Type.SAVE_CACHE;
 	}
-	msg.db_id = DB_Id.GAME;
-	msg.struct_name = "User_Info";
-	msg.data_type = DB_Data_Type.USER_DATA;
-	msg.user_info = this.user_info;
-	send_msg_to_db(Msg.SYNC_SAVE_DB_DATA, this.sid, msg);
+	this.msg.vector_data = false;
+	this.msg.db_id = DB_Id.GAME;
+	this.msg.struct_name = "User_Info";
+	this.msg.data_type = DB_Data_Type.USER_DATA;
+	this.msg.user_info = this.user_info;
+	send_msg_to_db(Msg.SYNC_SAVE_DB_DATA, this.sid, this.msg);
 }
