@@ -7,8 +7,7 @@
 function Route_User() {
     this.im_cid = 0;            //玩家所在的im服务器cid
     this.sid = 0;               //玩家sid
-    this.msg = new Object();    //玩家消息对象，所有消息的发送通过此对象
-	this.user_info = new User_Info();
+	this.user_info = null;
 }
 
 //玩家上线，加载数据
@@ -28,11 +27,12 @@ Route_User.prototype.logout = function() {
 	global.uid_route_user_map.delete(this.user_info.user_id);
 }
 
-Route_User.prototype.send_success_msg = function(msg_id) {
-	send_msg(Endpoint.ROUTE_SERVER, this.im_cid, msg_id, Msg_Type.NODE_S2C, this.sid, this.msg);
+Route_User.prototype.send_success_msg = function(msg_id, msg) {
+	send_msg(Endpoint.ROUTE_SERVER, this.im_cid, msg_id, Msg_Type.NODE_S2C, this.sid, msg);
 }
 
 Route_User.prototype.send_error_msg = function(error_code) {
-	this.msg.error_code = error_code;
-	send_msg(Endpoint.ROUTE_SERVER, this.im_cid, Msg.RES_ERROR_CODE, Msg_Type.NODE_S2C, this.sid, this.msg);
+	var msg = new Object();
+	msg.error_code = error_code;
+	send_msg(Endpoint.ROUTE_SERVER, this.im_cid, Msg.RES_ERROR_CODE, Msg_Type.NODE_S2C, this.sid, msg);
 }

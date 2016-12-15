@@ -11,7 +11,7 @@ function init(node_info) {
 	global.node_info = node_info;
 	global.timer.init();
 
-	var msg = new node_2();
+	var msg = new Object();
 	msg.node_info = node_info;
 	send_msg(Endpoint.IM_CENTER_CONNECTOR, 0, Msg.SYNC_NODE_INFO, Msg_Type.NODE_MSG, 0, msg);
 }
@@ -59,14 +59,14 @@ function on_add_session(session) {
     global.account_session_map.set(session.account, session);
 	
 	//通知client
-	var msg_res = new s2c_3();
+	var msg_res = new Object();
 	msg_res.account = session.account;
 	send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_CONNECT_IM, Msg_Type.S2C, 0, msg_res);
 }
 
 function on_remove_session(session) {
 	//通知center
-    var msg = new node_6();
+    var msg = new Object();
     send_msg(Endpoint.IM_CENTER_CONNECTOR, 0, Msg.SYNC_IM_CENTER_LOGOUT, Msg_Type.NODE_MSG, session.sid, msg);
 	
     global.cid_session_map.delete(session.cid);
@@ -79,7 +79,7 @@ function on_remove_session(session) {
 }
 
 function on_close_session(cid, error_code) {
-	var msg = new s2c_5();
+	var msg = new Object();
 	msg.error_code = error_code;
 	send_msg(Endpoint.IM_CLIENT_SERVER, cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, 0, msg);
 	//关闭客户端网络层链接
@@ -147,7 +147,7 @@ function connect_im(msg) {
 		return on_close_session(msg.cid, Error_Code.DISCONNECT_RELOGIN);	
 	}
 	
-	var msg_res = new node_4();
+	var msg_res = new Object();
 	msg_res.account = msg.account;
 	msg_res.token = msg.token;
 	msg_res.client_cid = msg.cid;
@@ -177,7 +177,7 @@ function process_db_ret_code(msg) {
         case Msg.SYNC_SELECT_DB_DATA: {
             if (msg.ret_code == DB_Ret_Code.DATA_NOT_EXIST && msg.query_name == "user_id") {
                 var session = global.sid_session_map.get(msg.sid);
-                var msg_res = new s2c_5();
+                var msg_res = new Object();
                 msg_res.error_code = Error_Code.NEED_CREATE_USER;
                 send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
             }
@@ -207,7 +207,7 @@ function fetch_user_info(msg) {
 
     log_info('fetch_user_info, get table index from db, account:', msg.account, ' cid:', msg.cid, ' sid:', msg.sid);
     var session = global.cid_session_map.get(msg.cid);
-    var msg_res = new node_246();
+    var msg_res = new Object();
     msg_res.db_id = DB_Id.GAME;
     msg_res.struct_name = "User_Info";
     msg_res.condition_name = "account";
@@ -222,7 +222,7 @@ function res_select_db_data(msg) {
     switch (msg.data_type) {
         case Select_Data_Type.INT64: {
             if (msg.query_name == "user_id" && msg.query_value > 0) {
-                var msg_res = new node_250();
+                var msg_res = new Object();
                 msg_res.db_id = DB_Id.GAME;
                 msg_res.key_index = msg.query_value;
                 msg_res.struct_name = "User_Info";
@@ -245,7 +245,7 @@ function create_user(msg) {
     //将创建用户信息保存起来，等待从db生成user_id后，将用户信息保存到db
     var session = global.cid_session_map.get(msg.cid);
     global.sid_create_user_map.set(session.sid, msg.user_info);
-    var msg_res = new node_248();
+    var msg_res = new Object();
     msg_res.type = "user_id";
     send_msg_to_db(Msg.SYNC_GENERATE_ID, session.sid, msg_res);
 }
@@ -253,24 +253,29 @@ function create_user(msg) {
 function res_generate_id(msg) {
     if (msg.id <= 0) {
         var session = global.sid_session_map.get(msg.sid);
-        var msg_res = new s2c_5();
+        var msg_res = new Object();
         msg_res.error_code = Error_Code.GENERATE_ID_ERROR;
         send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
     } else {
         //创建角色时候，既保存到缓存，又保存到db
-        var msg_res = new node_251();
+        var msg_res = new Object();
         msg_res.save_type = Save_Type.SAVE_DB_AND_CACHE;
+        msg_res.vector_data = false;
         msg_res.db_id = DB_Id.GAME;
         msg_res.struct_name = "User_Info";
         msg_res.data_type = DB_Data_Type.USER_DATA;
         var user_info = global.sid_create_user_map.get(msg.sid);
+        msg_res.user_info = new Object();
         msg_res.user_info.user_id = msg.id;
         msg_res.user_info.account = user_info.account;
         msg_res.user_info.user_name = user_info.user_name;
         msg_res.user_info.level = 1;
+        msg_res.user_info.exp = 0;
         msg_res.user_info.gender = user_info.gender;
         msg_res.user_info.career = user_info.career;
         msg_res.user_info.create_time = util.now_sec();
+        msg_res.user_info.login_time = msg_res.user_info.create_time;
+        msg_res.user_info.logout_time = 0;
         send_msg_to_db(Msg.SYNC_SAVE_DB_DATA, this.sid, msg_res);
 
         //成功登陆
