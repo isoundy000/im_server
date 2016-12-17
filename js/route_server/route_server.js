@@ -10,6 +10,14 @@ function init(node_info) {
 	log_info('route_server init, node_type:',node_info.node_type,' node_id:',node_info.node_id,' node_name:',node_info.node_name);
 	global.node_info = node_info;
 	global.timer.init();
+
+	var msg = new Object();
+    msg.node_info = node_info;
+    for(var i = 0; i < node_info.endpoint_list.length; ++i) {
+    	if(node_info.endpoint_list[i].endpoint_type == Endpoint_Type.CONNECTOR) {
+    		send_msg(node_info.endpoint_list[i].endpoint_id, 0, Msg.SYNC_NODE_INFO, Msg_Type.NODE_MSG, 0, msg);		
+    	}
+    }
 }
 
 function on_hotupdate(file_path) { }
@@ -72,6 +80,8 @@ function process_route_node_msg(msg) {
 		    }
 		    break;
 	    }
+	    case Msg.SYNC_NODE_INFO:
+	    	break;
 	    default:
 		    log_error('proceess_route_node_msg, msg_id not exist:', msg.msg_id);
 		    break;

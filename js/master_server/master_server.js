@@ -11,7 +11,11 @@ function init(node_info) {
 
     var msg = new Object();
     msg.node_info = node_info;
-    send_msg(Endpoint.MASTER_CENTER_CONNECTOR, 0, Msg.SYNC_NODE_INFO, Msg_Type.NODE_MSG, 0, msg);
+    for(var i = 0; i < node_info.endpoint_list.length; ++i) {
+    	if(node_info.endpoint_list[i].endpoint_type == Endpoint_Type.CONNECTOR) {
+    		send_msg(node_info.endpoint_list[i].endpoint_id, 0, Msg.SYNC_NODE_INFO, Msg_Type.NODE_MSG, 0, msg);		
+    	}
+    }
 }
 
 function on_hotupdate(file_path) { }
