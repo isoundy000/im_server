@@ -33,7 +33,7 @@ function on_drop(cid) {
 function on_msg(msg) {
 	log_debug('im_server on_msg, cid:',msg.cid,' msg_type:',msg.msg_type,' msg_id:',msg.msg_id,' sid:', msg.sid);
 	
-	if (msg.msg_type == Msg_Type.C2S) {
+	if (msg.msg_type == Msg_Type.TCP_C2S) {
 		process_im_client_msg(msg);
 	}
 	else if (msg.msg_type == Msg_Type.NODE_MSG) {
@@ -66,7 +66,7 @@ function on_add_session(session) {
 	//通知client
 	var msg_res = new Object();
 	msg_res.account = session.account;
-	send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_CONNECT_IM, Msg_Type.S2C, 0, msg_res);
+	send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_CONNECT_IM, Msg_Type.TCP_S2C, 0, msg_res);
 }
 
 function on_remove_session(session) {
@@ -86,7 +86,7 @@ function on_remove_session(session) {
 function on_close_session(cid, error_code) {
 	var msg = new Object();
 	msg.error_code = error_code;
-	send_msg(Endpoint.IM_CLIENT_SERVER, cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, 0, msg);
+	send_msg(Endpoint.IM_CLIENT_SERVER, cid, Msg.RES_ERROR_CODE, Msg_Type.TCP_S2C, 0, msg);
 	//关闭客户端网络层链接
 	close_client(Endpoint.IM_CLIENT_SERVER, cid);
 }
@@ -184,7 +184,7 @@ function process_db_ret_code(msg) {
                 var session = global.sid_session_map.get(msg.sid);
                 var msg_res = new Object();
                 msg_res.error_code = Error_Code.NEED_CREATE_USER;
-                send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
+                send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.TCP_S2C, msg.sid, msg_res);
             }
             else if (msg.ret_code == DB_Ret_Code.OPT_FAIL) {
                 log_error('select db data fail, sid:', msg.sid);
@@ -260,7 +260,7 @@ function res_generate_id(msg) {
         var session = global.sid_session_map.get(msg.sid);
         var msg_res = new Object();
         msg_res.error_code = Error_Code.GENERATE_ID_ERROR;
-        send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, msg.sid, msg_res);
+        send_msg(Endpoint.IM_CLIENT_SERVER, session.cid, Msg.RES_ERROR_CODE, Msg_Type.TCP_S2C, msg.sid, msg_res);
     } else {
         //创建角色时候，既保存到缓存，又保存到db
         var msg_res = new Object();

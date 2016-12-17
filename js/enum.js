@@ -24,13 +24,15 @@ if (typeof Error_Code == "undefined") {
 
 if (typeof Msg_Type == "undefined") {
 	var Msg_Type = {};
-	Msg_Type.C2S		= 1;	//客户端发到服务器的消息
-	Msg_Type.S2C		= 2;	//服务器发到客户端的消息
+	Msg_Type.TCP_C2S	= 1;	//客户端发到服务器的消息
+	Msg_Type.TCP_S2C	= 2;	//服务器发到客户端的消息
 	Msg_Type.NODE_C2S   = 3;	//客户端经过gate中转发到服务器的消息
 	Msg_Type.NODE_S2C   = 4;	//服务器经过gate中转发到客户端的消息
 	Msg_Type.NODE_MSG   = 5;	//服务器进程节点间通信的消息
 	Msg_Type.DATA_MSG   = 6;    //经过data中转发到data子进程的消息
 	Msg_Type.HTTP_MSG	= 7;	//http消息
+	Msg_Type.WS_C2S		= 8;	//websocket客户端消息
+	Msg_Type.WS_S2C		= 9;	//websocket服务器消息
 }
 
 if (typeof Node_Type == "undefined") {

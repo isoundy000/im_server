@@ -19,7 +19,7 @@ Session.prototype.on_heartbeat = function (msg) {
 
     var msg_res = new Object();
     msg_res.server_time = this.last_hb_time;
-    send_msg(Endpoint.IM_CLIENT_SERVER, msg.cid, Msg.RES_HEARTBEAT, Msg_Type.S2C, 0, msg_res);
+    send_msg(Endpoint.IM_CLIENT_SERVER, msg.cid, Msg.RES_HEARTBEAT, Msg_Type.TCP_S2C, 0, msg_res);
 }
 
 function Im_User() {
@@ -68,13 +68,13 @@ Im_User.prototype.tick = function(now) {
 }
 
 Im_User.prototype.send_success_msg = function(msg_id, msg) {
-	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.S2C, this.sid, msg);
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.TCP_S2C, this.sid, msg);
 }
 
 Im_User.prototype.send_error_msg = function(error_code) {
 	var msg = new Object();
 	msg.error_code = error_code;
-	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, Msg.RES_ERROR_CODE, Msg_Type.S2C, this.sid, msg);
+	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, Msg.RES_ERROR_CODE, Msg_Type.TCP_S2C, this.sid, msg);
 }
 
 Im_User.prototype.sync_login_to_client = function() {
