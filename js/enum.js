@@ -31,8 +31,6 @@ if (typeof Msg_Type == "undefined") {
 	Msg_Type.NODE_MSG   = 5;	//服务器进程节点间通信的消息
 	Msg_Type.DATA_MSG   = 6;    //经过data中转发到data子进程的消息
 	Msg_Type.HTTP_MSG	= 7;	//http消息
-	Msg_Type.WS_C2S		= 8;	//websocket客户端消息
-	Msg_Type.WS_S2C		= 9;	//websocket服务器消息
 }
 
 if (typeof Node_Type == "undefined") {
