@@ -15,8 +15,6 @@ function on_hotupdate(file_path) { }
 function on_drop(cid) { }
 
 function on_msg(msg) {
-	log_debug('center_server on_msg, cid:',msg.cid,' msg_type:',msg.msg_type,' msg_id:',msg.msg_id,' sid:', msg.sid);
-	
 	if (msg.msg_type == Msg_Type.TCP_C2S) {
 		switch(msg.msg_id) {
 		    case Msg.REQ_SELECT_IM:
@@ -114,7 +112,7 @@ function verify_token(msg) {
 			on_close_session(msg.account, token_info.cid, Error_Code.TOKEN_ERROR);
 		}
 		var msg_res = new Object();
-		msg_res.node_code = Error_Code.TOKEN_ERROR;
+		msg_res.error_code = Error_Code.TOKEN_ERROR;
 		return send_msg(Endpoint.CENTER_NODE_SERVER, msg.cid, Msg.SYNC_NODE_CODE, Msg_Type.NODE_MSG, msg.sid, msg_res);
 	}
 

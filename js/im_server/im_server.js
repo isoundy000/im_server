@@ -32,7 +32,6 @@ function on_drop(cid) {
 
 function on_msg(msg) {
 	log_debug('im_server on_msg, cid:',msg.cid,' msg_type:',msg.msg_type,' msg_id:',msg.msg_id,' sid:', msg.sid);
-	
 	if (msg.msg_type == Msg_Type.TCP_C2S) {
 		process_im_client_msg(msg);
 	}
@@ -59,6 +58,7 @@ function send_msg_to_db(msg_id, sid, msg) {
 }
 
 function on_add_session(session) {
+    log_info('im add_session, sid:', session.sid, ' cid:', session.cid, " account:", session.account);
     global.cid_session_map.set(session.cid, session);
     global.sid_session_map.set(session.sid, session);
     global.account_session_map.set(session.account, session);
@@ -70,6 +70,7 @@ function on_add_session(session) {
 }
 
 function on_remove_session(session) {
+    log_info('im remove_session, sid:', session.sid, ' cid:', session.cid, " account:", session.account);
 	//通知center
     var msg = new Object();
     send_msg(Endpoint.IM_CENTER_CONNECTOR, 0, Msg.SYNC_IM_CENTER_LOGOUT, Msg_Type.NODE_MSG, session.sid, msg);
@@ -84,6 +85,7 @@ function on_remove_session(session) {
 }
 
 function on_close_session(cid, error_code) {
+    log_info('im close_session, cid:', cid, ' error_code:', error_code);
 	var msg = new Object();
 	msg.error_code = error_code;
 	send_msg(Endpoint.IM_CLIENT_SERVER, cid, Msg.RES_ERROR_CODE, Msg_Type.TCP_S2C, 0, msg);
@@ -160,9 +162,9 @@ function connect_im(msg) {
 }
 
 function process_node_code(msg) {
-	switch (msg.node_code) {
+	switch (msg.error_code) {
 	    case Error_Code.TOKEN_ERROR:
-	        on_close_session(Error_Code.TOKEN_ERROR);
+	        on_close_session(msg.sid, msg.error_code);
 	        break;
 	    default:
 	        break;

@@ -26,7 +26,6 @@ function on_drop(cid) { }
 
 function on_msg(msg) {
 	log_debug('route_server on_msg, cid:',msg.cid,' msg_type:',msg.msg_type,' msg_id:',msg.msg_id,' sid:', msg.sid);
-	
 	if (msg.msg_type == Msg_Type.NODE_C2S) {
 		process_route_client_msg(msg);
 	} else if (msg.msg_type == Msg_Type.NODE_MSG) {
@@ -63,7 +62,7 @@ function process_route_node_msg(msg) {
         case Msg.SYNC_NODE_CODE:
             log_error("process_route_node_msg, node_code:", msg.node_code, " sid:", msg.sid);
             break;
-            case Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT: {
+        case Msg.SYNC_IM_ROUTE_LOGIN_LOGOUT: {
 		    //im通知route玩家上线下线
 		    if (msg.login) {
 		        var route_user = global.sid_route_user_map.get(msg.sid);
