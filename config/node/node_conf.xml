@@ -7,16 +7,16 @@
   </hotupdate>
   <struct log_trace="0" agent_num="1" server_num="1">
     <base_struct path="config/struct/client_msg.xml"></base_struct>
+    <base_struct path="config/struct/client_struct.xml"></base_struct>
     <base_struct path="config/struct/http_msg.xml"></base_struct>
     <base_struct path="config/struct/node_msg.xml"></base_struct>
-    <base_struct path="config/struct/public_struct.xml"></base_struct>
     <base_struct path="config/struct/node_struct.xml"></base_struct>
     <msg_struct path="config/struct/client_msg.xml"></msg_struct>
+    <msg_struct path="config/struct/client_struct.xml"></msg_struct>
     <msg_struct path="config/struct/http_msg.xml"></msg_struct>
     <msg_struct path="config/struct/node_msg.xml"></msg_struct>
-    <msg_struct path="config/struct/public_struct.xml"></msg_struct>
     <msg_struct path="config/struct/node_struct.xml"></msg_struct>
-    <db_struct path="config/struct/public_struct.xml"></db_struct>
+    <db_struct path="config/struct/client_struct.xml"></db_struct>
     <db_struct path="config/struct/node_struct.xml"></db_struct>
   </struct>
   <node_list>
@@ -29,6 +29,7 @@
     <node type="2" global_script="js/global.js" main_script="js/data_server/data_server.js" max_session_count="10000">
       <hotupdate path="js/"></hotupdate>
       <hotupdate path="js/data_server/"></hotupdate>
+      <plugin path="plugin/monitorplugin.so"></plugin>
       <plugin path="plugin/dbplugin.so"></plugin>
       <msg_filter msg_type="5" min_msg_id="1" max_msg_id="255"></msg_filter>
       <endpoint type="2" gid="1" id="1" name="data_server" ip="127.0.0.1" port="7100" protocol="1" heartbeat="0"></endpoint>
@@ -46,12 +47,14 @@
     <node type="4" global_script="js/global.js" main_script="js/route_server/route_server.js">
       <hotupdate path="js/"></hotupdate>
       <hotupdate path="js/route_server/"></hotupdate>
+      <plugin path="plugin/monitorplugin.so"></plugin>
       <endpoint type="2" gid="1" id="1" name="route_server" ip="127.0.0.1" port="7300" protocol="1" heartbeat="0"></endpoint>
       <endpoint type="3" gid="1" id="2" name="route_master_connector" ip="127.0.0.1" port="7200" protocol="1" heartbeat="0"></endpoint>
     </node>
     <node type="5" global_script="js/global.js" main_script="js/im_server/im_server.js">
       <hotupdate path="js/"></hotupdate>
       <hotupdate path="js/im_server/"></hotupdate>
+      <plugin path="plugin/monitorplugin.so"></plugin>
       <endpoint type="1" gid="1" id="1" name="im_client_server" ip="127.0.0.1" port="7400" protocol="1" heartbeat="30"></endpoint>
       <endpoint type="3" gid="1" id="2" name="im_center_connector" ip="127.0.0.1" port="7001" protocol="1" heartbeat="0"></endpoint>
       <endpoint type="3" gid="1" id="3" name="im_data_connector" ip="127.0.0.1" port="7100" protocol="1" heartbeat="0"></endpoint>

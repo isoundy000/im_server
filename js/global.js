@@ -14,7 +14,7 @@ require("js/timer.js");
 var global = function () {};
 
 //进程节点信息
-global.node_info = null;
+global.node_info = new Object();
 //配置管理器
 global.config = new Config();
 global.config.init();
@@ -34,6 +34,8 @@ global.master_list = new Array();
 global.account_token_map = new Map();
 
 ///////////////////master_server变量////////////////////////
+//node_id--master_cid
+global.node_cid_map = new Map();
 //node_id--node_status
 global.node_status_map = new Map();
 

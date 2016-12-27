@@ -55,6 +55,7 @@ util.get_node_status = function() {
     all_node_status.send_per_sec = node_status.send_per_sec;
     all_node_status.recv_per_sec = node_status.recv_per_sec;
     all_node_status.task_count = node_status.task_count;
+    all_node_status.msg_list = node_status.msg_list;
     //获取cpu内存信息
     all_node_status.cpu_percent = proc_info.cpu_percent;
     all_node_status.vm_size = proc_info.vm_size;
@@ -64,7 +65,6 @@ util.get_node_status = function() {
     all_node_status.heap_total = heap_info.heap_total;
     all_node_status.heap_used = heap_info.heap_used;
     all_node_status.external_mem = heap_info.external_mem;
-    
     return all_node_status;
 }
 

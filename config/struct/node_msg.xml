@@ -11,19 +11,28 @@
     <struct type="Node_Status" name="node_status"/>
   </node_3>
 
-	<node_4 msg_id="4" msg_name="SYNC_IM_CENTER_VERIFY_TOKEN">
+  <node_4 msg_id="4" msg_name="SYNC_NODE_STACK_INFO">
+    <arg type="int" bit="32" name="stack_drop_cid"/>
+    <arg type="int" bit="32" name="stack_timer_id"/>
+    <arg type="int" bit="32" name="stack_msg_id"/>
+    <arg type="int" bit="32" name="stack_msg_type"/>
+    <arg type="int" bit="32" name="stack_sid"/>
+    <arg type="string" name="stack_trace"/>
+  </node_4>
+
+	<node_5 msg_id="5" msg_name="SYNC_IM_CENTER_VERIFY_TOKEN">
 		<arg type="string" name="account"/>
 		<arg type="string" name="token"/>
 		<arg type="int" bit="32" name="client_cid"/>
-	</node_4>
+	</node_5>
 
-  <node_5 msg_id="5" msg_name="SYNC_IM_ROUTE_LOGIN_LOGOUT">
+  <node_6 msg_id="6" msg_name="SYNC_IM_ROUTE_LOGIN_LOGOUT">
     <arg type="bool" name="login"/>
     <struct type="User_Info" name="user_info"/>
-  </node_5>
-
-  <node_6 msg_id="6" msg_name="SYNC_IM_CENTER_LOGOUT">
   </node_6>
+
+  <node_7 msg_id="7" msg_name="SYNC_IM_CENTER_LOGOUT">
+  </node_7>
 
   <node_245 msg_id="245" msg_name="SYNC_DB_RET_CODE">
     <arg type="uint" bit="8" name="opt_msg_id"/>

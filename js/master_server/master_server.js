@@ -1,7 +1,7 @@
 /*
 *	描述：master_server脚本
 *	作者：张亚磊
-*	时间：2016/12/01
+*	时间：2016/10/27
 */
 
 function init(node_info) {
@@ -13,7 +13,7 @@ function init(node_info) {
     	if(node_info.endpoint_list[i].endpoint_type == Endpoint_Type.CONNECTOR) {
     	    util.sync_node_info(node_info.endpoint_list[i].endpoint_id);
     	}
-    }
+    }    
 }
 
 function on_hotupdate(file_path) { }
@@ -42,10 +42,14 @@ function on_tick(timer_id) {
 function process_master_node_msg(msg) {
 	switch(msg.msg_id) {
 	    case Msg.SYNC_NODE_INFO:
+	        global.node_cid_map.set(msg.node_info.node_id, msg.cid);
 		    send_msg(Endpoint.MASTER_CENTER_CONNECTOR, 0, msg.msg_id, msg.msg_type, msg.sid, msg);
 		    break;
 	    case Msg.SYNC_NODE_STATUS: 
 	        global.node_status_map.set(msg.node_status.node_id, msg.node_status);
+	        break;
+	    case Msg.SYNC_NODE_STACK_INFO:
+	        send_msg(Endpoint.MASTER_HTTP_SERVER, msg.sid, Msg.HTTP_RES_STACK_INFO, Msg_Type.HTTP_MSG, 0, msg);
 	        break;
 	    default:
 		    log_error('process_master_node_msg, msg_id not exist:', msg.msg_id);
@@ -57,15 +61,20 @@ function process_master_node_msg(msg) {
 function process_master_http_msg(msg) {
 	switch(msg.msg_id) {
 	    case Msg.HTTP_CREATE_NODE_PROCESS:
-	       //curl -d "{\"msg_id\":1,\"node_type\":7,\"node_id\":70003,\"endpoint_gid\":1,\"node_name\":\"game_server3\"}" "http://127.0.0.1:8080" 
-		    fork_process(msg.node_type, msg.node_id, msg.endpoint_gid, msg.node_name);
+	        //curl -d "{\"msg_id\":1,\"node_type\":5,\"node_id\":50002,\"endpoint_gid\":1,\"node_name\":\"im_server2\"}" "http://127.0.0.1:8080" 
+	        fork_process(msg.node_type, msg.node_id, msg.endpoint_gid, msg.node_name);
+	        close_client(Endpoint.MASTER_HTTP_SERVER, msg.cid);
 		    break;
 	    case Msg.HTTP_REQ_NODE_STATUS:
 	  	     //curl -d "{\"msg_id\":2}" "http://127.0.0.1:8080"
 	  	     req_node_status(msg);
 	  	     break;
+	    case Msg.HTTP_REQ_STACK_INFO:
+	        //curl -d "{\"msg_id\":3,\"node_id\":50001}" "http://127.0.0.1:8080"
+	        req_stack_info(msg);
+	        break;
 	    case Msg.HTTP_HOT_UPDATE:
-	        //curl -d "{\"msg_id\":3,\"file_list\":[\"game_server/game_player.js\"]}" "http://127.0.0.1:8080"
+	        //curl -d "{\"msg_id\":4,\"node_id\":50001,\"file_path\":\"js/im_server/im_user.js\"}" "http://127.0.0.1:8080"
 	        hot_update(msg);
 	        break;
 	    default:
@@ -83,17 +92,43 @@ function req_node_status(msg) {
 	send_msg(Endpoint.MASTER_HTTP_SERVER, msg.cid, Msg.HTTP_RES_NODE_STATUS, msg.msg_type, 0, msg_res);
 }
 
+function req_stack_info(msg) {
+    var eid = 0;
+    var node_type = parseInt(msg.node_id / 10000);
+    switch(node_type) {
+        case Node_Type.DATA_SERVER:
+            eid = Endpoint.DATA_MASTER_CONNECTOR;
+            break;
+        case Node_Type.ROUTE_SERVER:
+            eid = Endpoint.ROUTE_MASTER_CONNECTOR;
+            break;
+        case Node_Type.IM_SERVER:
+            eid = Endpoint.IM_MASTER_CONNECTOR;
+            break;
+        default:
+            break;
+    }
+
+    var node_status = global.node_status_map.get(msg.node_id);
+    if(eid > 0 && node_status != null) {
+        get_node_stack(msg.node_id, eid, 0, msg.cid);
+    }
+    else {
+        log_error("node_id error:", msg.node_id);
+        close_client(Endpoint.MASTER_HTTP_SERVER, msg.cid);
+    }
+}
+
 function hot_update(msg) {
-    for(var i = 0; i < msg.file_list.length; ++i) {
-        if (msg.file_list[i] == "global.js") {
-            continue;
-        }
+    if (msg.file_path == "global.js") {
+        close_client(Endpoint.MASTER_HTTP_SERVER, msg.cid);
+        return;
+    }
 
-        if (msg.file_list[i].indexOf(".js")) {
-            require(msg.file_list[i]);
-        }
-        else if (msg.file_list[i].indexOf(".xml")) {
+    if (msg.file_path.indexOf(".js")) {
+        require(msg.file_path);
+    }
+    else if (msg.file_path.indexOf(".xml")) {
 
-        }
     }
 }

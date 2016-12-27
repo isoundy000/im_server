@@ -1,5 +1,10 @@
 <root>
   
+  <Msg_Count>
+    <arg type="int" bit="32" name="msg_id"/>
+    <arg type="int" bit="32" name="msg_count"/>
+  </Msg_Count>
+  
   <Node_Status>
     <arg type="int" bit="32" name="node_type"/>
     <arg type="int" bit="32" name="node_id"/>
@@ -10,6 +15,7 @@
     <arg type="int" bit="32" name="send_per_sec"/>
     <arg type="int" bit="32" name="recv_per_sec"/>
     <arg type="int" bit="32" name="task_count"/>
+    <vector vbit="16" type="Msg_Count" name="msg_list"/>
     <arg type="int" bit="32" name="session_count"/>
     <arg type="float" name="cpu_percent"/>
     <arg type="int" bit="32" name="vm_size"/>
@@ -30,19 +36,25 @@
   <http_2 msg_id="2" msg_name="HTTP_REQ_NODE_STATUS">
   </http_2>
 
-  <http_3 msg_id="3" msg_name="HTTP_HOT_UPDATE">
-    <vector vbit="8" type="string" name="file_list"/>
+  <http_3 msg_id="3" msg_name="HTTP_REQ_STACK_INFO">
+    <arg type="int" bit="32" name="node_id"/>
   </http_3>
 
-  <http_4 msg_id="4" msg_name="HTTP_REQ_STACK_TRACE">
+  <http_4 msg_id="4" msg_name="HTTP_HOT_UPDATE">
     <arg type="int" bit="32" name="node_id"/>
+    <arg type="string" name="file_path"/>
   </http_4>
 
   <http_201 msg_id="201" msg_name="HTTP_RES_NODE_STATUS">
     <vector vbit="8" type="Node_Status" name="node_list"/>
   </http_201>
 
-  <http_202 msg_id="202" msg_name="HTTP_RES_STACK_TRACE">
+  <http_202 msg_id="202" msg_name="HTTP_RES_STACK_INFO">
+    <arg type="int" bit="32" name="stack_drop_cid"/>
+    <arg type="int" bit="32" name="stack_timer_id"/>
+    <arg type="int" bit="32" name="stack_msg_id"/>
+    <arg type="int" bit="32" name="stack_msg_type"/>
+    <arg type="int" bit="32" name="stack_sid"/>
     <arg type="string" name="stack_trace"/>
   </http_202>
   
