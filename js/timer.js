@@ -83,8 +83,8 @@ function Timer() {
 	
 	this.im_user_handler = function() {
 		var now = util.now_sec();
-		for (var value of global.uid_im_user_map.values()) {
-  			value.tick(now);
-		}
+		global.uid_im_user_map.forEach(function(value, key, map) {
+			value.tick(now);
+		});
     }
 }
