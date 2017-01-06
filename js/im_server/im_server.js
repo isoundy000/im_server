@@ -115,8 +115,8 @@ function process_im_client_msg(msg) {
 	    case Msg.REQ_CONNECT_IM:
 		    connect_im(msg);
 		    break;
-	    case Msg.REQ_FETCH_USER_INFO:
-	        fetch_user_info(msg);
+	    case Msg.REQ_USER_INFO:
+	        req_user_info(msg);
 	        break;
 	    case Msg.REQ_CREATE_USER:
 	        create_user(msg);
@@ -213,14 +213,14 @@ function process_db_ret_code(msg) {
     }
 }
 
-function fetch_user_info(msg) {
+function req_user_info(msg) {
     if (global.sid_im_user_map.get(msg.sid) || global.logout_map.get(msg.sid)) {
         log_error('relogin account:', msg.account);
         var session = sid_session_map.get(msg.sid);
         return on_remove_session(session, Error_Code.DISCONNECT_RELOGIN);
     }
 
-    log_info('fetch_user_info, get table index from db, account:', msg.account, ' cid:', msg.cid, ' sid:', msg.sid);
+    log_info('req_user_info, get table index from db, account:', msg.account, ' cid:', msg.cid, ' sid:', msg.sid);
     var session = global.cid_session_map.get(msg.cid);
     var msg_res = new Object();
     msg_res.db_id = DB_Id.GAME;

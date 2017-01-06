@@ -26,7 +26,7 @@
   <s2c_3 msg_id="3" msg_name="RES_CONNECT_IM">
   </s2c_3>
 
-  <c2s_4 msg_id="4" msg_name="REQ_FETCH_USER_INFO">
+  <c2s_4 msg_id="4" msg_name="REQ_USER_INFO">
     <arg type="string" name="account"/>
   </c2s_4>
 
