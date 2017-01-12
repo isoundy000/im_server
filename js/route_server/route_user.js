@@ -27,7 +27,7 @@ Route_User.prototype.logout = function() {
 	global.uid_route_user_map.delete(this.user_info.user_id);
 }
 
-Route_User.prototype.send_success_msg = function(msg_id, msg) {
+Route_User.prototype.send_msg = function(msg_id, msg) {
 	send_msg(Endpoint.ROUTE_SERVER, this.im_cid, msg_id, Msg_Type.NODE_S2C, this.sid, msg);
 }
 

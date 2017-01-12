@@ -67,7 +67,7 @@ Im_User.prototype.tick = function(now) {
     }
 }
 
-Im_User.prototype.send_success_msg = function(msg_id, msg) {
+Im_User.prototype.send_msg = function(msg_id, msg) {
 	send_msg(Endpoint.IM_CLIENT_SERVER, this.cid, msg_id, Msg_Type.TCP_S2C, this.sid, msg);
 }
 
@@ -80,7 +80,7 @@ Im_User.prototype.send_error_msg = function(error_code) {
 Im_User.prototype.sync_login_to_client = function() {
 	var msg = new Object();
 	msg.user_info = this.user_info;
-	this.send_success_msg(Msg.RES_USER_INFO, msg);
+	this.send_msg(Msg.RES_USER_INFO, msg);
 }
 
 Im_User.prototype.sync_login_logout_to_route = function(login) {

@@ -31,6 +31,10 @@
   <node_6 msg_id="6" msg_name="SYNC_IM_CENTER_LOGOUT">
   </node_6>
 
+  <node_7 msg_id="7" msg_name="SYNC_HOT_UPDATE">
+    <arg type="string" name="file_path"/>
+  </node_7>
+  
   <node_244 msg_id="244" msg_name="SYNC_DB_RET_CODE">
     <arg type="uint" bit="8" name="opt_msg_id"/>
     <arg type="int" bit="8" name="ret_code"/>

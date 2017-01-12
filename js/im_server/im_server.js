@@ -135,6 +135,9 @@ function process_im_node_msg(msg) {
 	    case Msg.SYNC_IM_CENTER_VERIFY_TOKEN:
 		    verify_token(msg);
 		    break;
+        case Msg.SYNC_HOT_UPDATE:
+            hot_update(msg);
+            break;
 	    case Msg.SYNC_DB_RET_CODE:
 	        process_db_ret_code(msg);
 	        break;
@@ -185,6 +188,11 @@ function verify_token(msg) {
 	session.sid = msg.sid;
 	session.account = msg.account;
 	on_add_session(session);
+}
+
+//后台手动热更新
+function hot_update(msg) {
+
 }
 
 function process_db_ret_code(msg) {
